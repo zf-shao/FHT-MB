@@ -11,3 +11,4 @@ colorama==0.4.4
 tensorboard>=2.5.0
 protobuf==3.20.1
 setuptools==58.0.4
+recbole
