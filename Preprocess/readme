@@ -1,0 +1,9 @@
+The data preprocessing flow as:
+
+1. duplicate the sequences to enrich training data (say, 3 times)
+2. mask purchase behaviors in a high rate (say, 0.8)
+3. pack the dataset
+
+while training, further add random masks in the sequence regardless of the behavior type to enrich the training instances across different behaviors
+
+Note that we did not care about the mapping of all behavior types, resorting the relations that you need from the processed data can be tough. Therefore, you can just follow the flow above and reprocess your own dataset. :)
