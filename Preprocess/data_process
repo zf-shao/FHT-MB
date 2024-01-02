@@ -1,0 +1,195 @@
+      
+import numpy as np
+from scipy.sparse import csr_matrix
+import pickle
+from Utils.TimeLogger import log
+
+def getBehId(beh):
+	if beh == 'pv':
+		behval = 1
+	elif beh == 'fav':
+		behval = 2
+	elif beh == 'cart':
+		behval = 3
+	elif beh == 'buy':
+		behval = 4
+	return behval
+
+def mapping(infile):
+	usrId = dict()
+	itmId = dict()
+	catId = dict()
+	usrid, itmid, catid = [0, 0, 0]
+	interaction = list()
+	itmCat = dict()# may need re-label
+	with open(infile, 'r') as fs:
+		for line in fs:
+			arr = line.strip().split(',')
+			row = int(arr[0]) - 1
+			col = int(arr[1]) - 1
+			cat = int(arr[2]) - 1
+			beh = getBehId(arr[3])
+			time = int(arr[4])
+			if row not in usrId:
+				usrId[row] = usrid
+				interaction.append(dict())
+				usrid += 1
+			if col not in itmId:
+				itmId[col] = itmid
+				itmid += 1
+			if cat not in catId:
+				catId[cat] = catid
+				catid += 1
+			row = usrId[row]
+			col = itmId[col]
+			cat = catId[cat]
+			if col not in interaction[row]:
+				interaction[row][col] = [None]*5
+			interaction[row][col][beh] = time
+			itmCat[col] = cat
+	return interaction, itmCat, usrid, itmid, catid
+
+def OriginalCheck(arr):
+	return arr[-1] > 20
+def fstCheck(arr):
+	return arr[-1] > 20 and arr[3] > 2
+def scdCheck(arr):
+	return arr[-1] > 10 and arr[3] > 2
+def thdCheck(arr):
+	return arr[-1] > 5 and arr[3] > 2
+
+def filter(interaction, itmCat, usrnum, itmnum, checkFunc, filterItem=True):
+	# get keep set
+	usrKeep = set()
+	itmKeep = set()
+	itmCnt = [[0] * 5 for i in range(itmnum)]
+	for usr in range(usrnum):
+		data = interaction[usr]
+		usrCnt = [0] * 5
+		for col in data:
+			for i in range(4):
+				if data[col][i+1] != None:
+					itmCnt[col][i] += 1
+					usrCnt[i] += 1
+					itmCnt[col][-1] += 1
+					usrCnt[-1] += 1
+		if checkFunc(usrCnt):
+			usrKeep.add(usr)
+	for itm in range(itmnum):
+		if checkFunc(itmCnt[itm]) or not filterItem:
+			itmKeep.add(itm)
+
+	# filter data
+	retint = list()
+	usrid = 0
+	itmid = 0
+	itmId = dict()
+	for row in range(usrnum):
+		if row not in usrKeep:
+			continue
+		usr = usrid
+		usrid += 1
+		retint.append(dict())
+		data = interaction[row]
+		for col in data:
+			if col not in itmKeep:
+				continue
+			if col not in itmId:
+				itmId[col] = itmid
+				itmid += 1
+			itm = itmId[col]
+			retint[usr][itm] = data[col]
+	# filter itmCat
+	catId = dict()
+	catid = 0
+	retItmCat = [None] * itmid
+	for col in itmCat:
+		if col not in itmId:
+			continue
+		cat = itmCat[col]
+		itm = itmId[col]
+		if cat not in catId:
+			catId[cat] = catid
+			catid += 1
+		ncat = catId[cat]
+		retItmCat[itm] = ncat
+	return retint, retItmCat, usrid, itmid, catid
+
+def split(interaction, usrnum, itmnum):
+	pickNum = 10000
+	# random pick
+	usrPerm = np.random.permutation(usrnum)
+	pickUsr = usrPerm[:pickNum]
+
+	tstInt = [None] * usrnum
+	exception = 0
+	for usr in pickUsr:
+		temp = list()
+		data = interaction[usr]
+		backup = list()
+		for itm in data:
+			if data[itm][4] != None:
+				temp.append((itm, data[itm][4], 4))
+			# for inttype in range(4, 0, -1):
+			# 	if data[itm][inttype] != None:
+			# 		temp.append((itm, data[itm][inttype], inttype))
+			# 		break
+		if len(temp) == 0:
+			temp = backup
+			exception += 1
+			if len(backup) == 0:
+				continue
+		temp.sort(key=lambda x: x[1])
+		tstInt[usr] = temp[-1][0]
+		for i in range(1, 5):
+			interaction[usr][tstInt[usr]][i] = None
+	print('Exception:', exception, np.sum(np.array(tstInt[usr])!=None))
+	return interaction, tstInt
+
+def trans(interaction, usrnum, itmnum):
+	r, c, d = [list(), list(), list()]
+	for i in range(4):
+		r.append(list())
+		c.append(list())
+		d.append(list())
+	for usr in range(usrnum):
+		if interaction[usr] == None:
+			continue
+		data = interaction[usr]
+		for col in data:
+			for i in range(4):
+				if data[col][i+1] != None:
+					r[i].append(usr)
+					c[i].append(col)
+					d[i].append(data[col][i+1])
+	intMats = list()
+	for i in range(4):
+		intMats.append(csr_matrix((d[i], (r[i], c[i])), shape=(usrnum, itmnum)))
+	return intMats
+
+prefix = 'D:/Datasets/Tmall/'
+infile = prefix + 'UserBehavior.csv'
+log('Start')
+interaction, itmCat, usrnum, itmnum, catnum = mapping(infile)
+log('Id Mapped, usr %d, itm %d' % (usrnum, itmnum))
+checkFuncs = [fstCheck, scdCheck, thdCheck]
+for i in range(3):
+	filterItem = True if i < 2 else False
+	interaction, itmCat, usrnum, itmnum, catnum = filter(interaction, itmCat, usrnum, itmnum, checkFuncs[i], filterItem)
+	print('Filter', i, 'times:', usrnum, itmnum)
+
+log('Sparse Samples Filtered, usr %d, itm %d' % (usrnum, itmnum))
+trnInt, tstInt = split(interaction, usrnum, itmnum)
+log('Datasets Splited')
+trnMats = trans(trnInt, usrnum, itmnum)
+log('Train Mat Done')
+behNames = ['pv', 'fav', 'cart', 'buy']
+for i in range(4):
+	with open(prefix+'trn_'+behNames[i], 'wb') as fs:
+		pickle.dump(trnMats[i], fs)
+with open(prefix+'tst_int', 'wb') as fs:
+	pickle.dump(tstInt, fs)
+log('Interaction Data Saved')
+with open(prefix+'itmCat', 'wb') as fs:
+	pickle.dump(itmCat, fs)
+log('Item Category Saved')
