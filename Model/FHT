@@ -217,8 +217,8 @@ class FHT(SequentialRecommender):
 
 
         if self.enable_hg:
-            x_raw = item_emb
-            x_raw = x_raw * torch.sigmoid(x_raw.matmul(self.gating_weight)+self.gating_bias)
+            x_raw = item_emb + type_embedding
+    
 
 
             Gs = self.build_Gs_unique(item_seq,type_seq)
