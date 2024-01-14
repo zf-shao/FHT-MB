@@ -1,11 +1,7 @@
-## FHT-MB
-This is the implementation for our paper Filter-enhanced Hypergraph Transformer for Multi-Behavior Sequential Recommendation, accepted by ICASSP'24.
+## Topic
 
 
-## Datasets
-Tmall: https://tianchi.aliyun.com/dataset/649
+Firstly, our method is to solve the problem of sequential recommendation in multi-behavior scenarios, which belongs to the category of sequential learning/decision. 
+One crucial technique is the Fast Fourier Transform, which is essential in the digital signal processing area. Therefore, the application scope of our method belongs to the category of signal processing methods. 
 
-RetailRocket: https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset
-
-## Environments:
-We implemented all of our programs on a machine with Intel(R) Xeon(R) Gold 6150 CPU, 29GB memory, and NVidia Gefoce GTX 3090.
+Secondly, our method focuses on exploring the sequential patterns behind user-item interactions when incorporating the multi-behavior dependencies for accurate recommendation, which is easy to tell because of the clear model architecture. 
