@@ -1,1 +1,10 @@
-The granularity of periodic behavior habits is defined as “scales” in our method. Referring to equation (2) in the paper, we define “scales” as the denominator to the sequence length, which are actually parameters. The function of “scales” is to partition the multi-behavior sequence of users into sub-sequences with different scale settings, and then further generate scale-specific behavior embedding for better recommendation, which corresponds to the behavior habits changes mentioned in our paper, i.e., item transitions with different periodic trends. We set two different scale settings in the paper, and they are searched by the average sequence length of different datasets. We will show detailed parameter settings of “scales” in the source code once the paper is accepted. 
+The granularity of periodic behavior habits is defined as “scales” in our method. 
+
+Referring to equation (2) in the paper, we define “scales” as the denominator to the sequence length, 
+which are actually parameters. The function of “scales” is to partition the multi-behavior sequence of users 
+into sub-sequences with different scale settings, and then further generate scale-specific behavior embedding 
+for better recommendation, which corresponds to the behavior habits changes mentioned in our paper, i.e., 
+item transitions with different periodic trends. We set two different scale settings in the paper, 
+and they are searched by the average sequence length of different datasets. 
+
+
