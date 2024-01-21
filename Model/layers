@@ -78,7 +78,6 @@ class FilterEncoder(nn.Module):
 
         all_encoder_layers = []
         # random_noise = torch.FloatTensor(hidden_states.shape).uniform_(0, 1).to('cuda')
-        # 这里可以试试加上随机扰动试试！
 
         for layer_module in self.layer:
             hidden_states = layer_module(hidden_states, attention_mask)
