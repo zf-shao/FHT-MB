@@ -4,7 +4,7 @@ from scipy.sparse import csr_matrix
 import pickle
 from Utils.TimeLogger import log
 
-#Tmall
+#Tmall, the same as MBHT
 def getBehId(beh):
 	if beh == 'pv':
 		behval = 1
