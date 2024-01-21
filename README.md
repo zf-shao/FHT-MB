@@ -7,6 +7,8 @@ Tmall: https://tianchi.aliyun.com/dataset/649
 
 RetailRocket: https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset
 
+The processed datasets can be downloaded from the [URLs](https://drive.google.com/drive/u/1/my-drive).
+
 ## Environments:
 We implemented all of our programs on a machine with Intel(R) Xeon(R) Gold 6150 CPU, 29GB memory, and NVidia Gefoce GTX 3090.
 
