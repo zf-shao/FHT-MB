@@ -22,11 +22,13 @@ The granularity of periodic behavior habits is defined as “scales” in our me
 Referring to equation (2) in the paper, we define “scales” as the denominator to the sequence length, which are actually parameters. The function of “scales” is to partition the multi-behavior sequence of users into sub-sequences with different scale settings, and then further generate scale-specific behavior embedding for better recommendation, which corresponds to the behavior habits changes mentioned in our paper, i.e., item transitions with different periodic trends. We set two different scale settings in the paper, and they are searched by the average sequence length of different datasets. 
 
 ## Acknowledgement:
+```
 @inproceedings{shao2024filter,
   title={Filter-enhanced hypergraph transformer for multi-behavior sequential recommendation},
-  author={Shao, Zhufeng and Wang, Shoujin and Lu, Wenpeng and Zhang, Weiyu and Guan, Hongjiao and Zhao, Long},
+  author={Zhufeng Shao, Shoujin Wang, Wenpeng Lu, Weiyu Zhang, Hongjiao Guan and Long Zhao},
   booktitle={IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
   pages={1--5},
   year={2024},
   organization={IEEE}
 }
+```
