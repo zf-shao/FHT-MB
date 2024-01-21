@@ -10,7 +10,7 @@ RetailRocket: https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset
 ## Environments:
 We implemented all of our programs on a machine with Intel(R) Xeon(R) Gold 6150 CPU, 29GB memory, and NVidia Gefoce GTX 3090.
 
-##Train
+## Train:
 python run_FHT.py --model=[FHT] --dataset=[retail_beh] --gpu_id=[0] --batch_size=[2048]
 
 ## About Scales:
